@@ -30,6 +30,12 @@ p <- ggplot(mtcars, aes(x=factor(am), y=mpg, color=factor(am))) +
 p
 ```
 ###Criteria
+Fit the linear model
+```{r}
+fit <- lm(mpg ~ factor(am), mtcars)
+
+summary(fit)
+```
 
 Did the student interpret the coefficients correctly?
 Did the student do some exploratory data analyses?
