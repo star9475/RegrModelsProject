@@ -7,10 +7,15 @@ output: pdf_document
 ###Overview
 This is a Coursera project for the Data Science Specialization: Regression Models Course.  The project is described https://www.coursera.org/learn/regression-models/peer/nxntd/regression-models-course-project.  This report is uploaded as a pdf, but the R Markdown is located https://github.com/star9475/RegrModelsProject/blob/master/RegrModelsProject.Rmd.
 
+###Executive Summary
 This project looks at a data set of a collection of cars. Explore the relationship between a set of variables and miles per gallon (MPG) (outcome), and answer the following two questions:
 
 * Is an automatic or manual transmission better for MPG
 * Quantify the MPG difference between automatic and manual transmissions
+
+The analysis of the data shows there isn't an effect on mpg from the type of transmission.  The weight of the car has the biggest effect.
+
+**The Dataset**
 
 First, load libraries and the <code>mtcars</code> dataset:
 ```{r, warning=FALSE, message=FALSE}
@@ -92,9 +97,8 @@ The residual plots show nothing significant.
 
 **Confidence Intervals**
 ```{r}
-confint(model3)
+confint(model3, 'wt')
 ```
+In the data set, the 95% confidence interval of the weight is -6.964 to -3.741 thousands per mpg.
 
-##Executive Summary
-The analysis of the data shows there isn't an effect on mpg from the type of transmission.  The weight of the car has the biggest effect.
 
