@@ -1,48 +1,103 @@
 ---
 title: "Coursera Regression Models Project"
 author: "Josh Starkey"
-date: "February 3, 2016"
+date: "February 28, 2016"
 output: html_document
 ---
+###Overview
+This is a Coursera project for the Data Science Specialization: Regression Models Course.  The project is described https://www.coursera.org/learn/regression-models/peer/nxntd/regression-models-course-project.  This report is uploaded as a pdf, but the R Markdown is located https://github.com/star9475/RegrModelsProject/blob/master/RegrModelsProject.Rmd.
 
-##Executive Summary
+This project looks at a data set of a collection of cars. Explore the relationship between a set of variables and miles per gallon (MPG) (outcome), and answer the following two questions:
 
-First, let's load libraries and the <code>mtcars</code> dataset:
-```{r, warning=FALSE, message=FALSE, cache=TRUE}
+* Is an automatic or manual transmission better for MPG
+* Quantify the MPG difference between automatic and manual transmissions
+
+First, load libraries and the <code>mtcars</code> dataset:
+```{r, warning=FALSE, message=FALSE}
 library(ggplot2)
+library(plotly)
+library(usdm)
 data(mtcars)
 ```
+Typing <code>?mtcars</code> brings up the help for the mtcars dataset.  The format is as follows:
+
+A data frame with 32 observations on 11 variables.
+
+Column | var name | unit
+-------|----------|-----
+[, 1] | mpg | Miles/(US) gallon
+[, 2] | cyl |	 Number of cylinders
+[, 3] | disp |	Displacement (cu.in.)
+[, 4] | hp | Gross horsepower
+[, 5] | drat | Rear axle ratio
+[, 6] | wt | Weight (lb/1000)
+[, 7] | qsec | 1/4 mile time
+[, 8] | vs | V/S
+[, 9] | am | Transmission (0 = automatic, 1 = manual)
+[,10] | gear | Number of forward gears
+[,11] | carb | Number of carburetors
 
 ###Exploratory Analysis
 ```{r}
+summary(mtcars)
 str(mtcars)
+head(mtcars)
 ```
 
-Explore with Graphs
+**Explore with Graphs**
 
-```{r, fig.align="left", cache = TRUE, warning=FALSE,message=FALSE, echo=FALSE}
-p <- ggplot(mtcars, aes(x=factor(am), y=mpg, color=factor(am))) +
-     geom_violin(scale = "width", trim=TRUE) +
-     scale_color_manual(values=c("blue", "red")) +
-     geom_point(size=2, position="jitter") +
-     labs(title ="Mtcars Violin Plot", y="MPG", x="Transmission type") +
-     theme_minimal()
-p
+```{r, fig.align="left", warning=FALSE,message=FALSE, echo=FALSE}
+
+#ggplot(mtcars, aes(x=factor(am), y=mpg, color=factor(am))) +
+#     geom_boxplot() +
+#     scale_color_manual(values=c("blue", "red")) +
+#     geom_point(size=2, position="jitter") +
+#     labs(title ="Mtcars Box Plot", y="MPG", x="Transmission type") +
+#     coord_cartesian() +
+#     theme_minimal()
+plot_ly(mtcars, y = mpg, color = factor(am), type = "box")
 ```
-###Criteria
-Fit the linear model
+
+###Fit a model
+
+```{r, cache=TRUE}
+summary(lm(mpg ~ . , data = mtcars))
+```
+The coefficients <code>wt</code> and <code>am</code> have the most significance and correlation to the outcome variable <code>mpg</code>.  
+
+Refit the model with just these factors
+```{r, cache=TRUE}
+model1 <- lm(mpg ~ factor(am) -1, mtcars)
+model2 <- lm(mpg ~ wt, mtcars)
+model3 <- lm(mpg ~ factor(am) -1 + wt, mtcars)
+
+summary(model1)
+summary(model2)
+summary(model3)
+```
+The model 2 and 3 have similar R-squared values.  Since the desire was to show the transmission type with respect to mpg, let's use model 3 with both transmission and weight.
+
+**Describe the Coefficients**
 ```{r}
-fit <- lm(mpg ~ factor(am), mtcars)
+model1$coefficients
+model3$coefficients
+```
+There's a reduction in about 5 mpg for every 1000 lbs of weight.  By itself, it looks like the transmission type has a 10 mpg affect on the car.  However <code>model3</code>shows weight has a bigger effect. 
 
-summary(fit)
+**Residual Plots of Selected Model**
+```{r}
+par(mfrow = c(2, 2))
+plot(model3)
+```
+The residual plots show nothing significant.
+
+**Confidence Intervals**
+```{r}
+confint(model3)
 ```
 
-Did the student interpret the coefficients correctly?
-Did the student do some exploratory data analyses?
-Did the student fit multiple models and detail their strategy for model selection?
-Did the student answer the questions of interest or detail why the question(s) is (are) not answerable?
-Did the student do a residual plot and some diagnostics?
-Did the student quantify the uncertainty in their conclusions and/or perform an inference correctly?
-Was the report brief (about 2 pages long) for the main body of the report and no longer than 5 with supporting appendix of figures?
-Did the report include an executive summary?
-Was the report done in Rmd (knitr)?
+##Executive Summary
+The analysis of the data shows there isn't an effect on mpg from the type of transmission.  The weight of the car has the biggest effect.
+
+
+
