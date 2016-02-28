@@ -2,7 +2,7 @@
 title: "Coursera Regression Models Project"
 author: "Josh Starkey"
 date: "February 28, 2016"
-output: html_document
+output: pdf_document
 ---
 ###Overview
 This is a Coursera project for the Data Science Specialization: Regression Models Course.  The project is described https://www.coursera.org/learn/regression-models/peer/nxntd/regression-models-course-project.  This report is uploaded as a pdf, but the R Markdown is located https://github.com/star9475/RegrModelsProject/blob/master/RegrModelsProject.Rmd.
@@ -15,7 +15,6 @@ This project looks at a data set of a collection of cars. Explore the relationsh
 First, load libraries and the <code>mtcars</code> dataset:
 ```{r, warning=FALSE, message=FALSE}
 library(ggplot2)
-library(plotly)
 library(usdm)
 data(mtcars)
 ```
@@ -37,7 +36,7 @@ Column | var name | unit
 [,10] | gear | Number of forward gears
 [,11] | carb | Number of carburetors
 
-###Exploratory Analysis
+**Exploratory Analysis**
 ```{r}
 summary(mtcars)
 str(mtcars)
@@ -48,17 +47,17 @@ head(mtcars)
 
 ```{r, fig.align="left", warning=FALSE,message=FALSE, echo=FALSE}
 
-#ggplot(mtcars, aes(x=factor(am), y=mpg, color=factor(am))) +
-#     geom_boxplot() +
-#     scale_color_manual(values=c("blue", "red")) +
-#     geom_point(size=2, position="jitter") +
-#     labs(title ="Mtcars Box Plot", y="MPG", x="Transmission type") +
-#     coord_cartesian() +
-#     theme_minimal()
-plot_ly(mtcars, y = mpg, color = factor(am), type = "box")
+ggplot(mtcars, aes(x=factor(am), y=mpg, color=factor(am))) +
+     geom_boxplot() +
+     scale_color_manual(values=c("blue", "red")) +
+     geom_point(size=2, position="jitter") +
+     labs(title ="Mtcars Box Plot", y="MPG", x="Transmission type") +
+     coord_cartesian() +
+     theme_minimal()
+#plot_ly(mtcars, y = mpg, color = factor(am), type = "box")
 ```
 
-###Fit a model
+**Fit a model**
 
 ```{r, cache=TRUE}
 summary(lm(mpg ~ . , data = mtcars))
@@ -85,7 +84,7 @@ model3$coefficients
 There's a reduction in about 5 mpg for every 1000 lbs of weight.  By itself, it looks like the transmission type has a 10 mpg affect on the car.  However <code>model3</code>shows weight has a bigger effect. 
 
 **Residual Plots of Selected Model**
-```{r}
+```{r, warning=FALSE,message=FALSE}
 par(mfrow = c(2, 2))
 plot(model3)
 ```
@@ -98,6 +97,4 @@ confint(model3)
 
 ##Executive Summary
 The analysis of the data shows there isn't an effect on mpg from the type of transmission.  The weight of the car has the biggest effect.
-
-
 
